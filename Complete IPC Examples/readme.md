@@ -1,3 +1,5 @@
+Imp (Key Note): `main.js loads the preload script, which is loaded(preload script) in the renderer before the HTML runs. The renderer is the part where the HTML (index.html) is displayed.`
+
 ## Key IPC Methods
 
 **1. From Preload to Main:**
