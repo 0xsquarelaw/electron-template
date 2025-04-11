@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Electron IPC Example</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; padding: 20px; }
+    button { margin: 5px; padding: 8px 16px; }
+    #messages { margin-top: 20px; border: 1px solid #ddd; padding: 10px; height: 300px; overflow-y: auto; }
+    .message { margin: 5px 0; padding: 5px; border-bottom: 1px solid #eee; }
+  </style>
+</head>
+<body>
+  <h1>Electron IPC Communication</h1>
+  
+  <div>
+    <button id="send-button">Send One-way Message</button>
+    <button id="request-button">Request Data (Invoke)</button>
+    <button id="cleanup-button">Remove Listener</button>
+  </div>
+  
+  <h2>Messages:</h2>
+  <div id="messages"></div>
+  
+  <!-- The renderer script that uses our electronAPI -->
+  <script src="renderer.js"></script>
+</body>
+</html>
