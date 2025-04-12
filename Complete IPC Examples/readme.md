@@ -1,5 +1,37 @@
 Imp (Key Note): `main.js loads the preload script, which is loaded(preload script) in the renderer before the HTML runs. The renderer is the part where the HTML (index.html) is displayed.`
 
+Visual Respresentation of IPC
+---
+
+| #  | 📨 Who Sends | 📬 Who Listens | 📚 Method Pair                              | 💭 Response? | ✅ Verified |
+|----|-------------|----------------|---------------------------------------------|--------------|----------|
+| 1  | Renderer    | Main           | `ipcRenderer.send` + `ipcMain.on`           | ❌ No         | ✅ One-way notification from renderer to main |
+| 2  | Renderer    | Main           | `ipcRenderer.invoke` + `ipcMain.handle`     | ✅ Yes        | ✅ Two-way request/response (Promise-based) |
+| 3  | Main        | Renderer       | `webContents.send` + `ipcRenderer.on`       | ❌ No         | ✅ (One-way notification or Push-Style message) from main to renderer |
+
+- Yes — both "one-way message" and "push message" are basically the same kind of action with different way of saying:
+  - 📬 "Send something without expecting a reply."
+
+
+
+| #   | 📨 Renderer (via Preload) | 📬 Main Process | 📚 Method Pair (Preload Implementation) | 💭 Response? | ✅ Verified |
+|-----|---------------------------|-----------------|--------------------------------------|--------------|----------|
+| 1   | Custom API (Preload: `ipcRenderer.send`) | `ipcMain.on`      | `ipcRenderer.send` + `ipcMain.on`       | ❌ No       | ✅ One-way notification from renderer to main |
+| 2   | Custom API (Preload: `ipcRenderer.invoke`) | `ipcMain.handle`  | `ipcRenderer.invoke` + `ipcMain.handle`   | ✅ Yes      | ✅ Two-way request/response (Promise-based) |
+| 3   | Main Process (`webContents.send`) | Renderer (via Preload: `ipcRenderer.on`) | `webContents.send` + `ipcRenderer.on`   | ❌ No       | ✅ (One-way notification or Push-Style message) from main to renderer |
+
+Key Changes and Explanations:
+
+* **"📨 Who Sends" Column:**
+    * Changed to "Renderer (via Preload)" to emphasize that the renderer uses custom APIs defined in the preload script.
+    * Added "(Preload: `ipcRenderer.send`)" and "(Preload: `ipcRenderer.invoke`)" to show where the actual `ipcRenderer` calls are made.
+* **"📬 Who Listens" Column:**
+    * For the case of Main to renderer communication, the renderer still recieves the information, but it does so through the preload script and the event listener created there. Therefore the renderer is still the one that is listening, albeit through the preload script.
+* **"📚 Method Pair (Preload Implementation)" Column:**
+    * Added "(Preload Implementation)" to clarify that these method pairs are used *within* the preload script.
+* **Preload's Importance:**
+    * This table now accurately reflects the preload script's role as a crucial intermediary, ensuring secure and controlled IPC.
+
 ## Key IPC Methods
 
 **1. From Preload to Main:**
